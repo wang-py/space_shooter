@@ -39,26 +39,25 @@ pressed_x = False #ability
 
 #bullet settings
 class bullet:
-    def __init__(self, size = bullet_size, speed = 10, xpos = 0, ypos = 0, color = bullet_color):
+    def __init__(self, size = [bullet_size, bullet_size], speed = 10, pos = [0, 0], color = bullet_color):
         self.size = size
         self.speed = speed
-        self.xpos = xpos
-        self.ypos = ypos
+        self.pos = pos
         self.color = color
 
 def spawn_bullets(bullet_list, xpos, ypos):
     if len(bullet_list) < 5:
-        bullet_list.append(bullet(xpos=xpos + (player_size-bullet_size)/2, ypos=ypos))
+        bullet_list.append(bullet(pos=[xpos + (player_size-bullet_size)/2, ypos]))
 #(self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2, bullet.size, bullet.size)
 #spawn bullets at designated postion
 def draw_bullets(bullet_list):
     for bullet in bullet_list:
-        pygame.draw.rect(screen, bullet.color, (bullet.xpos, bullet.ypos, bullet.size, bullet.size))
+        pygame.draw.rect(screen, bullet.color, (bullet.pos[0], bullet.pos[1], bullet.size[0], bullet.size[1]))
 
 def update_bullet_positions():
     for idx, bullet in enumerate(bullet_list):
-        if bullet.ypos <= window_height and bullet.ypos > 0:
-            bullet.ypos -= bullet.speed
+        if bullet.pos[1] <= window_height and bullet.pos[1] > 0:
+            bullet.pos[1] -= bullet.speed
         else:
             bullet_list.pop(idx)
 
@@ -134,6 +133,13 @@ def collision_check(square_list, player):
             return True
     return False
 
+def killbox_check(square_list, bullet_list):
+    for square in square_list:
+        for bullet in bullet_list:
+            if detect_collision(square, bullet):
+                return True
+    return False
+
 def detect_collision(player, enemy):
     p_x = player.pos[0]
     p_y = player.pos[1]
@@ -199,6 +205,8 @@ while not game_over:
     
     drop_enemies(square_list)
     update_bullet_positions()
+    if killbox_check(square_list, bullet_list):
+        score+=1
     score = update_enemy_positions(square_list, score)
     enemy_speed = set_level(score)
     text = "Score: " + str(score)
