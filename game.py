@@ -10,6 +10,8 @@ window_height = 600
 rec_color_r = (255, 0, 0)
 rec_color_b = (0, 0, 255)
 bullet_color = (255,255,255)
+player_size = 50
+
 #number of bullets
 bullet_list = []
 color_yellow = (255, 255, 0)
@@ -65,7 +67,7 @@ class player:
         fire_bullets(self.pos[0], self.pos[1])
         pass
 
-    def __init__(self, size = [50, 50], speed = [10, 10], pos = [window_width/2, window_height - 2 * 50], color = rec_color_r):
+    def __init__(self, size = [player_size, player_size], speed = [10, 10], pos = [window_width/2, window_height - 2 * 50], color = rec_color_r):
         self.size = size
         self.speed = speed
         self.pos = pos
@@ -174,13 +176,13 @@ while not game_over:
     screen.fill(background_color)
     x = player_main.pos[0]
     y = player_main.pos[1]
-    if pressed_left:
+    if pressed_left and x > 0:
         x -= player_main.speed[0]
-    if pressed_right:
+    if pressed_right and x < window_width - player_size:
         x += player_main.speed[0]
-    if pressed_up:
+    if pressed_up and y > 0:
         y -= player_main.speed[1]
-    if pressed_down:
+    if pressed_down and y < window_height - player_size:
         y += player_main.speed[1]
     if pressed_x:
         pass
