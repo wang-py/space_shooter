@@ -42,14 +42,14 @@ class bullet:
         self.pos = pos
         self.color = color
 
-def drop_bullets(is_firing):
-    if len(bullet_list) < 5 and is_firing:
+def spawn_bullets(bullet_list):
+    if len(bullet_list) < 5:
         bullet_list.append(bullet())
 #(self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2, bullet.size, bullet.size)
 #spawn bullets at designated postion
-def spawn_bullets(xpos, ypos):
+def fire_bullets(xpos, ypos):
     for bullet in bullet_list:
-        pygame.draw.rect(screen, bullet.color, xpos, ypos, bullet.size, bullet.size)
+        pygame.draw.rect(screen, bullet.color, (xpos, ypos, bullet.size, bullet.size))
 
 def update_bullet_positions():
     for idx, bullet in enumerate(bullet_list):
@@ -61,7 +61,8 @@ def update_bullet_positions():
 
 #player settings
 class player:
-    def fire():
+    def fire(self):
+        fire_bullets(self.pos[0], self.pos[1])
         pass
 
     def __init__(self, size = [50, 50], speed = [10, 10], pos = [window_width/2, window_height - 2 * 50], color = rec_color_r):
@@ -184,6 +185,7 @@ while not game_over:
     if pressed_x:
         pass
     if pressed_z:
+        spawn_bullets(bullet_list)
         player_main.fire()
         
     player_main.pos = [x, y]
@@ -193,6 +195,7 @@ while not game_over:
         break
     
     drop_enemies(square_list)
+    update_bullet_positions()
     score = update_enemy_positions(square_list, score)
     enemy_speed = set_level(score)
     text = "Score: " + str(score)
