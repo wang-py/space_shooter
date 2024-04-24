@@ -11,6 +11,7 @@ rec_color_r = (255, 0, 0)
 rec_color_b = (0, 0, 255)
 bullet_color = (255,255,255)
 player_size = 50
+bullet_size = 5
 
 #number of bullets
 bullet_list = []
@@ -38,25 +39,26 @@ pressed_x = False #ability
 
 #bullet settings
 class bullet:
-    def __init__(self, size = 5, speed = 10, pos = [0, 0], color = bullet_color):
+    def __init__(self, size = bullet_size, speed = 10, xpos = 0, ypos = 0, color = bullet_color):
         self.size = size
         self.speed = speed
-        self.pos = pos
+        self.xpos = xpos
+        self.ypos = ypos
         self.color = color
 
-def spawn_bullets(bullet_list):
+def spawn_bullets(bullet_list, xpos, ypos):
     if len(bullet_list) < 5:
-        bullet_list.append(bullet())
+        bullet_list.append(bullet(xpos=xpos + (player_size-bullet_size)/2, ypos=ypos))
 #(self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2, bullet.size, bullet.size)
 #spawn bullets at designated postion
-def fire_bullets(xpos, ypos):
+def draw_bullets(bullet_list):
     for bullet in bullet_list:
-        pygame.draw.rect(screen, bullet.color, (xpos, ypos, bullet.size, bullet.size))
+        pygame.draw.rect(screen, bullet.color, (bullet.xpos, bullet.ypos, bullet.size, bullet.size))
 
 def update_bullet_positions():
     for idx, bullet in enumerate(bullet_list):
-        if bullet.pos[1] <= window_height and bullet.pos[1] > 0:
-            bullet.pos[1] -= bullet.speed
+        if bullet.ypos <= window_height and bullet.ypos > 0:
+            bullet.ypos -= bullet.speed
         else:
             bullet_list.pop(idx)
 
@@ -64,7 +66,7 @@ def update_bullet_positions():
 #player settings
 class player:
     def fire(self):
-        fire_bullets(self.pos[0], self.pos[1])
+        spawn_bullets(bullet_list, self.pos[0], self.pos[1])
         pass
 
     def __init__(self, size = [player_size, player_size], speed = [10, 10], pos = [window_width/2, window_height - 2 * 50], color = rec_color_r):
@@ -187,7 +189,6 @@ while not game_over:
     if pressed_x:
         pass
     if pressed_z:
-        spawn_bullets(bullet_list)
         player_main.fire()
         
     player_main.pos = [x, y]
@@ -204,6 +205,7 @@ while not game_over:
     label = my_font.render(text, 1, color_yellow)
     screen.blit(label, (window_width - 200, window_height - 40))
 
+    draw_bullets(bullet_list)
     draw_enemies(square_list)
     pygame.draw.rect(screen, rec_color_r, (player_main.pos[0], player_main.pos[1], player_main.size[0],player_main.size[1]))
 
