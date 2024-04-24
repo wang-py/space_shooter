@@ -202,6 +202,7 @@ while not game_over:
     
     if collision_check(square_list, player_main):
         game_over = True
+        print("Your score is: %d"%score)
         break
     
     drop_enemies(square_list)
