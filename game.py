@@ -134,9 +134,10 @@ def collision_check(square_list, player):
     return False
 
 def killbox_check(square_list, bullet_list):
-    for square in square_list:
+    for idx, square in enumerate(square_list):
         for bullet in bullet_list:
             if detect_collision(square, bullet):
+                square_list.pop(idx)
                 return True
     return False
 
