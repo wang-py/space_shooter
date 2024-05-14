@@ -4,16 +4,16 @@ import sys
 
 pygame.init()
 
-#game settings
+# game settings
 window_width = 800
 window_height = 600
 rec_color_r = (255, 0, 0)
 rec_color_b = (0, 0, 255)
-bullet_color = (255,255,255)
+bullet_color = (255, 255, 255)
 player_size = 50
 bullet_size = 5
 
-#number of bullets
+# number of bullets
 bullet_list = []
 color_yellow = (255, 255, 0)
 item_color = (248, 24, 148)
@@ -24,20 +24,21 @@ my_font = pygame.font.SysFont("arial", 30)
 clock = pygame.time.Clock()
 game_fps = 30
 
-#GUI
+#  GUI
 screen = pygame.display.set_mode((window_width, window_height))
 game_over = False
 score = 0
 
-#control
+# control
 pressed_left = False
 pressed_right = False
 pressed_up = False
 pressed_down = False
-pressed_z = False #fire
-pressed_x = False #ability
+pressed_z = False  # fire
+pressed_x = False  # ability
 
-#bullet settings
+
+# bullet settings
 class bullet:
     def __init__(self, size = [bullet_size, bullet_size], speed = 10, pos = [0, 0], color = bullet_color):
         self.size = size
@@ -45,14 +46,18 @@ class bullet:
         self.pos = pos
         self.color = color
 
+
 def spawn_bullets(bullet_list, xpos, ypos):
     if len(bullet_list) < 5:
         bullet_list.append(bullet(pos=[xpos + (player_size-bullet_size)/2, ypos]))
-#(self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2, bullet.size, bullet.size)
-#spawn bullets at designated postion
+# (self.pos[0] + self.size[0]/2, self.pos[1] + self.size[1]/2, bullet.size, bullet.size)
+# spawn bullets at designated postion
+
+
 def draw_bullets(bullet_list):
     for bullet in bullet_list:
         pygame.draw.rect(screen, bullet.color, (bullet.pos[0], bullet.pos[1], bullet.size[0], bullet.size[1]))
+
 
 def update_bullet_positions():
     for idx, bullet in enumerate(bullet_list):
@@ -62,50 +67,59 @@ def update_bullet_positions():
             bullet_list.pop(idx)
 
 
-#player settings
+# player settings
 class player:
     def fire(self):
         spawn_bullets(bullet_list, self.pos[0], self.pos[1])
         pass
 
-    def __init__(self, size = [player_size, player_size], speed = [10, 10], pos = [window_width/2, window_height - 2 * 50], color = rec_color_r):
+    def __init__(self, size=[player_size, player_size], speed=[10, 10], pos=[window_width / 2, window_height - 2 * 50], color=rec_color_r):
         self.size = size
         self.speed = speed
         self.pos = pos
         self.color = color
-#        self.bullet_list = []
+#         self.bullet_list = []
+
 
 player_main = player()
 
-#enemy settings
+
+# enemy settings
 class square:
-    def __init__(self, size = [50, 50], speed = 10, pos = [0, 0], color = rec_color_b):
+    def __init__(self, size=[50, 50], speed=10, pos=[0, 0], color=rec_color_b):
         self.size = size
         self.speed = speed
         self.pos = pos
         self.color = color
+
 
 square_list = [square([30, 30], enemy_speed, [random.randint(0, window_width - 10), 0])]
 
-#items
+
+# items
 class speedup:
-    def __init__(self, size = [10, 10], speed = 12, pos = [0, 0], color = item_color):
+    def __init__(self, size=[10, 10], speed=12, pos=[0, 0], color=item_color):
         self.size = size
         self.speed = speed
         self.pos = pos
         self.color = color
 
+
 speedup_list = []
+
 
 def set_level(score):
     speed = score * 0.2 + 1
     return speed
 
+
 def draw_speedup_items(score, speedup_list):
     pass
 
+
 def drop_items():
     pass
+
 
 def drop_enemies(square_list):
     delay = random.random()
@@ -114,9 +128,11 @@ def drop_enemies(square_list):
         y_pos = 0
         square_list.append(square([30,30], enemy_speed, [x_pos, y_pos], rec_color_b))
 
+
 def draw_enemies(square_list):
     for square in square_list:
         pygame.draw.rect(screen, rec_color_b, (square.pos[0], square.pos[1], square.size[0], square.size[1]))
+
 
 def update_enemy_positions(square_list, score):
     for idx, square in enumerate(square_list):
@@ -127,11 +143,13 @@ def update_enemy_positions(square_list, score):
             score += 1
     return score
 
+
 def collision_check(square_list, player):
     for square in square_list:
         if detect_collision(player, square):
             return True
     return False
+
 
 def killbox_check(square_list, bullet_list):
     for idx, square in enumerate(square_list):
@@ -140,6 +158,7 @@ def killbox_check(square_list, bullet_list):
                 square_list.pop(idx)
                 return True
     return False
+
 
 def detect_collision(player, enemy):
     p_x = player.pos[0]
@@ -151,6 +170,7 @@ def detect_collision(player, enemy):
     if (e_x >= p_x and e_x < (p_x + player.size[0])) or (p_x >= e_x and p_x < (e_x + enemy.size[0])):
         if (e_y >= p_y and e_y < (p_y + player.size[1])) or (p_y >= e_y and p_y < (e_y + enemy.size[1])):
             return True
+
 
 while not game_over:
     for event in pygame.event.get():
@@ -197,18 +217,17 @@ while not game_over:
         pass
     if pressed_z:
         player_main.fire()
-        
+
     player_main.pos = [x, y]
-    
     if collision_check(square_list, player_main):
         game_over = True
         print("Your score is: %d"%score)
         break
-    
+
     drop_enemies(square_list)
     update_bullet_positions()
     if killbox_check(square_list, bullet_list):
-        score+=1
+        score += 1
     score = update_enemy_positions(square_list, score)
     enemy_speed = set_level(score)
     text = "Score: " + str(score)
