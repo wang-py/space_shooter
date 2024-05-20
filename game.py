@@ -40,7 +40,8 @@ pressed_x = False  # ability
 
 # bullet settings
 class bullet:
-    def __init__(self, size = [bullet_size, bullet_size], speed = 10, pos = [0, 0], color = bullet_color):
+    def __init__(self, size=[bullet_size, bullet_size], speed=10, pos=[0, 0],
+                 color=bullet_color):
         self.size = size
         self.speed = speed
         self.pos = pos
@@ -126,12 +127,14 @@ def drop_enemies(square_list):
     if len(square_list) < 10 and delay < 0.2:
         x_pos = random.randint(0, window_width - 50)
         y_pos = 0
-        square_list.append(square([30,30], enemy_speed, [x_pos, y_pos], rec_color_b))
+        square_list.append(square([30, 30], enemy_speed, [x_pos, y_pos],
+                                  rec_color_b))
 
 
 def draw_enemies(square_list):
     for square in square_list:
-        pygame.draw.rect(screen, rec_color_b, (square.pos[0], square.pos[1], square.size[0], square.size[1]))
+        pygame.draw.rect(screen, rec_color_b, (square.pos[0], square.pos[1],
+                                               square.size[0], square.size[1]))
 
 
 def update_enemy_positions(square_list, score):
@@ -221,7 +224,7 @@ while not game_over:
     player_main.pos = [x, y]
     if collision_check(square_list, player_main):
         game_over = True
-        print("Your score is: %d"%score)
+        print("Your score is: %d" % score)
         break
 
     drop_enemies(square_list)
@@ -236,7 +239,10 @@ while not game_over:
 
     draw_bullets(bullet_list)
     draw_enemies(square_list)
-    pygame.draw.rect(screen, rec_color_r, (player_main.pos[0], player_main.pos[1], player_main.size[0],player_main.size[1]))
+    pygame.draw.rect(screen, rec_color_r, (player_main.pos[0],
+                                           player_main.pos[1],
+                                           player_main.size[0],
+                                           player_main.size[1]))
 
     clock.tick(game_fps)
     pygame.display.update()
